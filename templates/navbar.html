@@ -1,0 +1,66 @@
+    <nav id="sidebar" class="sidebar js-sidebar">
+        <div class="sidebar-content js-simplebar">
+            <a class="sidebar-brand" href="">
+                <span class="align-middle">Auto BCS</span>
+            </a>
+            <ul class="sidebar-nav">
+                <li class="sidebar-header">
+                    MAIN MENU
+                </li>
+
+                <!-- halaman home -->
+                <li class="sidebar-item {{active_dashboard}}">
+                    <a class="sidebar-link" href="">
+                    <i class="align-middle" data-feather="sliders"></i> <span class="align-middle">Dashboard</span>
+                    </a>
+                </li>
+
+                <!-- halaman user -->
+                <li class="sidebar-item  {{active_user}}">
+                    <a class="sidebar-link" href="">
+                    <i class="align-middle" data-feather="user"></i> <span class="align-middle">User</span>
+                    </a>
+                </li>
+                
+                <!-- halaman node -->
+                <li class="sidebar-item {{active_node}}">
+                    <a class="sidebar-link" href="">
+                    <i class="align-middle" data-feather="hard-drive"></i> <span class="align-middle">Node</span>
+                    </a>
+                </li>
+
+                <!-- halaman ceph -->
+                <li class="sidebar-item {{active_ha}}">
+                    <a class="sidebar-link" href="">
+                        <i class="align-middle" data-feather="activity"></i> <span class="align-middle">High Availability</span>
+                    </a>
+                </li>
+                
+                <!-- logout -->
+                <li class="sidebar-item">
+                    <a class="sidebar-link logout-notif" href="{% url 'user_logout' %}">
+                        <i class="align-middle" data-feather="log-out"></i> <span class="align-middle">Logout</span>
+                    </a>
+                </li>
+
+                <!-- users -->
+                <li class="sidebar-header">
+                    MENU USERS
+                </li>
+
+                <li class="sidebar-item {{active_package}}">
+                    <a class="sidebar-link" href="">
+                    <i class="align-middle" data-feather="dollar-sign"></i> <span class="align-middle">Package Price</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-item {{active_users}}">
+                    <a class="sidebar-link" href="">
+                    <i class="align-middle" data-feather="users"></i> <span class="align-middle">Users</span>
+                    </a>
+                </li>
+
+            </ul>
+            
+        </div>
+    </nav>
