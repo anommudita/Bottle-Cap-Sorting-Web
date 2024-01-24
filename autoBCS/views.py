@@ -16,6 +16,15 @@ from django.contrib.auth import logout as auth_logout
 import time
 
 
+# live streaming video
+from django.http.response import StreamingHttpResponse
+from django.views.decorators import gzip
+
+# import opencv and threading
+import cv2
+import threading
+
+
 # Create your views here.
 def user_login(request):
     if request.method == 'POST':
@@ -50,9 +59,57 @@ def user_logout(request):
 
 
 @login_required(login_url='user_login')
+@gzip.gzip_page
 def dashboard(request):
-    context = {
-        'title': 'Dashboard',
-        'active_dashboard': 'active'
-    }
-    return render(request, 'dashboard.html', context)
+    try:
+        cam = VideoCamera()
+        return StreamingHttpResponse(gen(cam), content_type="multipart/x-mixed-replace;boundary=frame")
+    except:
+        pass
+    # context = {
+    #     'title': 'Dashboard',
+    #     'active_dashboard': 'active'
+    # }
+    return render(request, 'dashboard1.html')
+
+
+
+# @login_required(login_url='user_login')
+# class to capture video class from camera opencv
+class VideoCamera(object):
+    def  __init__(self) :
+        # instalasi camera opencv
+        self.video = cv2.VideoCapture(0)
+        # pengambilan frame
+        (self.grabbed, self.frame) = self.video.read()
+        # thread untuk update frame
+        threading.Thread(target=self.update, args=()).start()
+
+    
+    def __del__(self):
+        # penghentian pengambilan frame
+        self.video.release()
+
+    def get_frame(self):
+        # pengambilan frame atau capture frame
+        image = self.frame
+        _, jpeg = cv2.imencode('.jpg', image)
+
+        # pengambilan frame dalam bentuk byte
+        return jpeg.tobytes()
+
+    def update(self):
+        # looping untuk pengambilan frame
+        while True:
+            # pengambilan frame
+            (self.grabbed, self.frame) = self.video.read()
+        
+
+def gen(camera):
+    # looping untuk pengambilan frame
+    while True:
+        # pengambilan frame
+        frame = camera.get_frame()
+        # yield frame
+        yield(b'--frame\r\n'
+                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
