@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseServerError
 
 # message flash django
 from django.contrib import messages
@@ -61,16 +61,16 @@ def user_logout(request):
 @login_required(login_url='user_login')
 @gzip.gzip_page
 def dashboard(request):
-    try:
-        cam = VideoCamera()
-        return StreamingHttpResponse(gen(cam), content_type="multipart/x-mixed-replace;boundary=frame")
-    except:
-        pass
+    # try:
+    #     cam = VideoCamera()
+    #     return StreamingHttpResponse(gen(cam), content_type="multipart/x-mixed-replace;boundary=frame")
+    # except:
+    #     pass
     # context = {
     #     'title': 'Dashboard',
     #     'active_dashboard': 'active'
     # }
-    return render(request, 'dashboard1.html')
+    return render(request, 'dashboard.html')
 
 
 
@@ -79,7 +79,7 @@ def dashboard(request):
 class VideoCamera(object):
     def  __init__(self) :
         # instalasi camera opencv
-        self.video = cv2.VideoCapture(0)
+        self.video = cv2.VideoCapture(1)
         # pengambilan frame
         (self.grabbed, self.frame) = self.video.read()
         # thread untuk update frame
@@ -113,3 +113,14 @@ def gen(camera):
         # yield frame
         yield(b'--frame\r\n'
                 b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+        
+
+# video streaming
+@login_required(login_url='user_login')
+def video_feed(request):
+    try:
+        cam = VideoCamera()
+        return StreamingHttpResponse(gen(cam), content_type="multipart/x-mixed-replace;boundary=frame")
+    except Exception as e:
+        print(e)
+        return HttpResponseServerError("Internal server error")
