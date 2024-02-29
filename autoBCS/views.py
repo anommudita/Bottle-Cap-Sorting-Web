@@ -79,7 +79,7 @@ def dashboard(request):
 class VideoCamera(object):
     def  __init__(self) :
         # instalasi camera opencv
-        self.video = cv2.VideoCapture(1)
+        self.video = cv2.VideoCapture(0)
         # pengambilan frame
         (self.grabbed, self.frame) = self.video.read()
         # thread untuk update frame
